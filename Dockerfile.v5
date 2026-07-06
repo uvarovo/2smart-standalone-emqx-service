@@ -1,0 +1,11 @@
+FROM emqx/emqx:5.8.6
+
+USER root
+RUN apt-get update && apt-get install -y tzdata netcat-openbsd && rm -rf /var/lib/apt/lists/*
+COPY emqx.conf /opt/emqx/etc/emqx.conf
+COPY wait.sh /wait
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /wait /entrypoint.sh && chown emqx /wait /entrypoint.sh
+USER emqx
+
+CMD ["/bin/sh", "-c", "/wait && /entrypoint.sh"]
